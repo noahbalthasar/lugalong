@@ -1,0 +1,1143 @@
+<title>Lugalong</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+<style>
+  /* Layout concept: ein Anschlagbrett im Bahnhofsgang. Zettel mit Stecknadel und Abreissstreifen fuer den Kontakt, eine schmale Spalte fuer das Handy. */
+  :root {
+    --bg: #E8EDEA;
+    --paper: #FBFBF7;
+    --ink: #14262B;
+    --muted: #55686C;
+    --line: #C5D1CF;
+    --accent: #0B6E6E;
+    --accent-ink: #FFFFFF;
+    --offer-bg: #D5ECE9;
+    --offer-ink: #0A4F52;
+    --seek-bg: #F6E4D3;
+    --seek-ink: #8A3E10;
+    --ad-bg: #EFE9D2;
+    --ad-ink: #5C4A0E;
+    --star: #B7791F;
+    --pin: #B23A2E;
+    --error: #A3261B;
+    --font-display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+    --font-body: "Source Sans 3", "Segoe UI", Roboto, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F1A1D;
+      --paper: #172428;
+      --ink: #E6EFEE;
+      --muted: #93A6A8;
+      --line: #2B3D41;
+      --accent: #4DC2BD;
+      --accent-ink: #04201F;
+      --offer-bg: #12373A;
+      --offer-ink: #9BE0DB;
+      --seek-bg: #3A2616;
+      --seek-ink: #F0B488;
+      --ad-bg: #3A3314;
+      --ad-ink: #EBD98A;
+      --star: #F2B84B;
+      --pin: #E0675A;
+      --error: #FF9C90;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F1A1D;
+    --paper: #172428;
+    --ink: #E6EFEE;
+    --muted: #93A6A8;
+    --line: #2B3D41;
+    --accent: #4DC2BD;
+    --accent-ink: #04201F;
+    --offer-bg: #12373A;
+    --offer-ink: #9BE0DB;
+    --seek-bg: #3A2616;
+    --seek-ink: #F0B488;
+    --ad-bg: #3A3314;
+    --ad-ink: #EBD98A;
+    --star: #F2B84B;
+    --pin: #E0675A;
+    --error: #FF9C90;
+    color-scheme: dark;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.45;
+    padding-inline: 16px;
+    padding-block: 12px 40px;
+  }
+  .wrap { max-width: 640px; margin-inline: auto; display: flex; flex-direction: column; gap: 22px; }
+  h1, h2, h3 { font-family: var(--font-display); font-stretch: 78%; font-weight: 800; letter-spacing: 0.01em; line-height: 1.05; margin: 0; text-wrap: balance; }
+  h1 { font-size: clamp(2.6rem, 12vw, 4.4rem); text-transform: uppercase; line-height: 0.98; }
+  h1.mid { font-size: clamp(2.1rem, 9vw, 3.2rem); }
+  h1.long { font-size: clamp(1.6rem, 7vw, 2.6rem); }
+  h1, h2, h3 { overflow-wrap: anywhere; }
+  h2 { font-size: 1.7rem; text-transform: uppercase; }
+  h3 { font-size: 1.3rem; text-transform: uppercase; }
+  p { margin: 0; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  .top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 12px; padding-block: 4px 12px; border-bottom: 1px solid var(--line); }
+  .brand { font-family: var(--font-display); font-stretch: 78%; font-weight: 900; font-size: 1.5rem; text-transform: uppercase; letter-spacing: 0.04em; display: flex; align-items: baseline; gap: 10px; background: none; border: 0; padding: 0; cursor: pointer; }
+  .region { font-family: var(--font-body); font-stretch: 100%; font-weight: 600; font-size: 0.8rem; letter-spacing: 0.08em; color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 1px 7px; }
+  .nav { display: flex; gap: 6px; flex-wrap: wrap; }
+  .navbtn { background: transparent; color: var(--ink); border: 1.5px solid var(--ink); border-radius: 4px; padding: 6px 9px; font-weight: 600; font-size: 0.95rem; cursor: pointer; display: inline-flex; gap: 7px; align-items: center; }
+  .navbtn[aria-current="page"] { background: var(--ink); color: var(--bg); }
+  .navbtn .count { background: var(--ink); color: var(--bg); border-radius: 3px; padding: 0 6px; font-variant-numeric: tabular-nums; font-size: 0.85rem; }
+  .navbtn[aria-current="page"] .count { background: var(--bg); color: var(--ink); }
+
+  .lead { color: var(--muted); font-size: 1.1rem; max-width: 52ch; }
+  .stepline, .eyebrow { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .eyebrow { color: var(--accent); }
+  .stack { display: flex; flex-direction: column; gap: 14px; }
+  .section { display: flex; flex-direction: column; gap: 14px; padding-top: 8px; }
+  .choices { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  @media (min-width: 480px) { .choices { grid-template-columns: 1fr 1fr; } }
+  .choice { text-align: left; background: var(--paper); border: 2px solid var(--ink); border-radius: 6px; padding: 16px; display: flex; flex-direction: column; gap: 8px; cursor: pointer; min-width: 0; }
+  .choice:hover { background: var(--ink); color: var(--paper); }
+  .choice svg { width: 44px; height: 44px; }
+  .choice .t { font-family: var(--font-display); font-stretch: 78%; font-weight: 800; font-size: 1.4rem; text-transform: uppercase; line-height: 1.05; }
+  .choice .d { font-size: 0.95rem; color: var(--muted); }
+  .choice:hover .d { color: var(--paper); opacity: 0.85; }
+  .linkbtn { background: none; border: 0; padding: 0; color: var(--accent); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; align-self: flex-start; text-align: left; }
+  .linkbtn.sm { font-size: 0.9rem; }
+
+  .hero { display: flex; flex-direction: column; gap: 16px; padding-top: 10px; }
+  .btnrow { display: flex; flex-wrap: wrap; gap: 10px; }
+  .primary { background: var(--accent); color: var(--accent-ink); border: 2px solid var(--accent); border-radius: 5px; padding: 13px 18px; font-weight: 700; font-size: 1.05rem; cursor: pointer; }
+  .primary:hover { filter: brightness(1.08); }
+  .secondary { background: transparent; color: var(--ink); border: 2px solid var(--ink); border-radius: 5px; padding: 13px 18px; font-weight: 700; font-size: 1.05rem; cursor: pointer; }
+  .secondary:hover { background: var(--ink); color: var(--bg); }
+  .map { width: 100%; height: auto; display: block; }
+  .map text { font-family: var(--font-display); font-stretch: 80%; font-weight: 800; fill: var(--ink); text-transform: uppercase; }
+  .map .small { font-family: var(--font-body); font-stretch: 100%; font-weight: 600; text-transform: none; fill: var(--muted); }
+  .map .base { fill: none; stroke: var(--line); stroke-width: 4; stroke-linecap: round; }
+  .map .draw { fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 520; animation: draw 1.6s ease-out both; }
+  .map .stop { fill: var(--paper); stroke: var(--ink); stroke-width: 3; }
+  .map .slipbox { fill: var(--paper); stroke: var(--line); stroke-width: 1.5; }
+  .map .pinhead { fill: var(--pin); }
+  .map .offertag { fill: var(--offer-ink); font-size: 10px; letter-spacing: 0.08em; }
+  .map .seektag { fill: var(--seek-ink); font-size: 10px; letter-spacing: 0.08em; }
+  @keyframes draw { from { stroke-dashoffset: 520; } }
+
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+  .steps li { display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: start; }
+  .steps .n { font-family: var(--font-display); font-stretch: 70%; font-weight: 900; font-size: 3rem; line-height: 0.9; color: var(--accent); }
+  .steps h3 { margin-bottom: 4px; }
+  .steps p, .cols p, .principles p, .facts dd { color: var(--muted); }
+  .cols { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 560px) { .cols { grid-template-columns: repeat(3, 1fr); } }
+  .col { border-top: 3px solid var(--ink); padding-top: 10px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .prose { display: flex; flex-direction: column; gap: 12px; max-width: 58ch; }
+  .principles { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+  .principles li { border-left: 3px solid var(--accent); padding-left: 12px; display: flex; flex-direction: column; gap: 3px; }
+  .facts { margin: 0; display: grid; grid-template-columns: 1fr; gap: 10px; border-top: 3px solid var(--ink); padding-top: 12px; }
+  @media (min-width: 480px) { .facts { grid-template-columns: 1fr 1fr; } }
+  .facts div { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+  .facts dt { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .facts dd { margin: 0; color: var(--ink); font-weight: 600; overflow-wrap: anywhere; }
+  .cta { background: var(--ink); color: var(--bg); border-radius: 6px; padding: 22px 16px; display: flex; flex-direction: column; gap: 12px; }
+  .cta h2 { color: var(--bg); }
+  .cta .primary { align-self: flex-start; background: var(--bg); color: var(--ink); border-color: var(--bg); }
+  .contactline { font-weight: 600; user-select: all; overflow-wrap: anywhere; }
+  .supporters { border: 2px dashed var(--line); border-radius: 6px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+
+  form { display: flex; flex-direction: column; gap: 16px; }
+  .row2 { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media (min-width: 480px) { .row2 { grid-template-columns: 1fr 1fr; } }
+  .field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .field label { font-weight: 600; font-size: 0.95rem; }
+  .field .hint { font-size: 0.85rem; color: var(--muted); }
+  .field input, .field select, .field textarea { width: 100%; min-width: 0; box-sizing: border-box; background: var(--paper); border: 1.5px solid var(--line); border-radius: 5px; padding: 10px 12px; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }
+  .field textarea { min-height: 96px; resize: vertical; }
+  .field .err { color: var(--error); font-size: 0.88rem; font-weight: 600; }
+  .field.bad input, .field.bad select, .field.bad textarea { border-color: var(--error); }
+  .formnote { font-size: 0.88rem; color: var(--muted); }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  .filters { display: flex; flex-wrap: wrap; gap: 10px 18px; }
+  .seg { display: inline-flex; border: 1.5px solid var(--ink); border-radius: 5px; overflow: hidden; }
+  .seg button { background: transparent; border: 0; padding: 7px 12px; font-weight: 600; cursor: pointer; border-right: 1.5px solid var(--ink); }
+  .seg button:last-child { border-right: 0; }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+
+  .board { display: flex; flex-direction: column; gap: 22px; }
+  .slip { position: relative; background: var(--paper); border: 1px solid var(--line); border-radius: 4px; padding: 22px 16px 0; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 1px 0 var(--line); }
+  .slip::before { content: ""; position: absolute; top: 7px; left: 50%; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: var(--pin); box-shadow: 0 1px 2px rgba(0,0,0,.35); }
+  .slip.ad { background: var(--ad-bg); border-style: dashed; padding-bottom: 16px; }
+  .slip.ad::before { background: var(--ad-ink); }
+  .slip .head { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; }
+  .tag { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; }
+  .tag.offer { background: var(--offer-bg); color: var(--offer-ink); }
+  .tag.seek { background: var(--seek-bg); color: var(--seek-ink); }
+  .tag.adtag { background: var(--ad-ink); color: var(--ad-bg); }
+  .tag.plain { border: 1px solid var(--line); color: var(--muted); }
+  .route { font-family: var(--font-display); font-stretch: 80%; font-weight: 800; font-size: 1.55rem; line-height: 1.1; text-transform: uppercase; overflow-wrap: anywhere; }
+  .route .arrow { color: var(--accent); padding-inline: 4px; }
+  .slip.ad .route { color: var(--ad-ink); }
+  .when { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .detail { color: var(--muted); }
+  .slip.ad .detail { color: var(--ad-ink); }
+  .price { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .note { font-style: italic; overflow-wrap: anywhere; }
+  .match { font-size: 0.9rem; font-weight: 700; color: var(--accent); }
+  .person { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+  .person .pname { font-weight: 700; }
+  .rate-sum { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .rate-sum .glyph { color: var(--star); }
+  .rate-sum.new { font-weight: 500; color: var(--muted); }
+  .reviews { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; border-left: 3px solid var(--line); padding-left: 12px; }
+  .reviews li { display: flex; flex-direction: column; gap: 2px; }
+  .reviews .rstars { color: var(--star); letter-spacing: 0.1em; }
+  .reviews .rmeta { font-size: 0.82rem; color: var(--muted); }
+  .reviews .rtxt { overflow-wrap: anywhere; }
+  .reviews .rnote { font-size: 0.85rem; color: var(--muted); font-style: italic; }
+  .tear { margin-top: 6px; border-top: 2px dashed var(--line); margin-inline: -16px; padding: 10px 16px 12px; display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between; }
+  .tear .contact { font-weight: 600; overflow-wrap: anywhere; user-select: all; }
+  .tear .who { color: var(--muted); font-size: 0.9rem; }
+  .tear button { background: var(--ink); color: var(--bg); border: 0; border-radius: 4px; padding: 7px 12px; font-weight: 600; cursor: pointer; }
+  .tear button.ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--ink); }
+  .tear .acts { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ratepanel { margin-inline: -16px; border-top: 2px dashed var(--line); padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+  .ratepanel h3 { font-size: 1.1rem; }
+  .starpick { display: flex; gap: 6px; }
+  .starpick button { width: 44px; height: 44px; border: 1.5px solid var(--line); border-radius: 5px; background: var(--paper); color: var(--muted); font-size: 1.4rem; line-height: 1; cursor: pointer; }
+  .starpick button.on { color: var(--star); border-color: var(--star); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { border: 1.5px solid var(--line); border-radius: 4px; background: var(--paper); padding: 6px 10px; font-weight: 600; font-size: 0.92rem; cursor: pointer; }
+  .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .ratepanel .err { color: var(--error); font-size: 0.88rem; font-weight: 600; }
+  .ratepanel .btnrow button { padding: 10px 14px; font-size: 1rem; }
+
+  .pkgs { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .pkg { background: var(--paper); border: 2px solid var(--ink); border-radius: 6px; padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .pkg.best { border-color: var(--accent); }
+  .pkg .pr { font-family: var(--font-display); font-stretch: 78%; font-weight: 800; font-size: 2rem; line-height: 1; font-variant-numeric: tabular-nums; }
+  .pkg .pr small { font-family: var(--font-body); font-stretch: 100%; font-size: 0.9rem; font-weight: 600; color: var(--muted); }
+  .pkg ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; color: var(--muted); }
+  .pkg .primary, .pkg .secondary { align-self: flex-start; padding: 10px 14px; font-size: 1rem; }
+
+  .empty { border: 2px dashed var(--line); border-radius: 6px; padding: 24px 16px; color: var(--muted); text-align: center; }
+  .done { background: var(--offer-bg); color: var(--offer-ink); border-radius: 6px; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .done h2 { color: var(--offer-ink); }
+  .done.warn { background: var(--seek-bg); color: var(--seek-ink); }
+  .done.warn h2 { color: var(--seek-ink); }
+  .copybox { width: 100%; box-sizing: border-box; min-height: 140px; background: var(--paper); color: var(--ink); border: 1.5px solid var(--line); border-radius: 5px; padding: 10px 12px; font: inherit; resize: vertical; }
+  footer { font-size: 0.85rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .footlinks { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+  .legal { display: flex; flex-direction: column; gap: 18px; max-width: 62ch; }
+  .legal section { display: flex; flex-direction: column; gap: 8px; }
+  .legal h2 { font-size: 1.35rem; }
+  .legal ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+  .sponsor-demo { border: 2px dashed var(--line); border-radius: 6px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+  .sponsor-demo .line { font-family: var(--font-display); font-stretch: 80%; font-weight: 800; font-size: 1.2rem; text-transform: uppercase; overflow-wrap: anywhere; }
+  .sponsor-demo .by { font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ad-ink); }
+  .pkg .unit { font-size: 0.9rem; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <button class="brand" id="brandBtn" type="button" aria-label="Zur Startseite"><span id="brandName"></span><span class="region" id="regionTag"></span></button>
+    <nav class="nav" aria-label="Hauptmenü">
+      <button class="navbtn" id="boardBtn" type="button">Brett <span class="count" id="boardCount">0</span></button>
+      <button class="navbtn" id="adsBtn" type="button">Werben</button>
+      <button class="navbtn" id="aboutBtn" type="button">Über uns</button>
+      <button class="navbtn" id="contactBtn" type="button">Kontakt</button>
+    </nav>
+  </header>
+  <main id="view" class="stack" aria-live="polite"></main>
+  <footer>
+    <p>Prototyp zum Ausprobieren. Zettel und Bewertungen bleiben nur in deinem Browser und sind für andere nicht sichtbar. Haftung und Versicherung sind noch nicht geregelt. Die Beispiele sind erfunden.</p>
+    <div class="footlinks">
+      <button class="linkbtn sm" id="impBtn" type="button">Impressum</button>
+      <button class="linkbtn sm" id="dsBtn" type="button">Datenschutzerklärung</button>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var BRAND = "Lugalong";
+  var REGION = "Luzern";
+  // Optional ausfuellen. Leer lassen blendet die Kontaktzeile aus.
+  var CONTACT = "";
+  // Fuer das Impressum. Leer lassen zeigt "wird vor dem Start ergaenzt".
+  var ADDRESS = "";
+  var LEGAL_FORM = "";
+  // Solange true, zeigen Impressum und Datenschutz den Hinweis "Entwurf".
+  var LEGAL_DRAFT = true;
+  var HOSTING = "GitHub Pages (GitHub Inc., USA)";
+  // Optional. Adresse eines Formular-Dienstes (z. B. Formspree). Leer heisst: Nachricht wird zum Kopieren angezeigt.
+  var FORM_ENDPOINT = "";
+  var STORE_KEY = "mitgenommen-zettel-v1";
+  var RATE_KEY = "lugalong-ratings-v1";
+  var WINDOWS = ["Morgens", "Mittags", "Nachmittags", "Abends", "Flexibel"];
+  var ITEMS = ["Koffer", "Rucksack", "Velo", "Ski oder Snowboard", "Material oder Paket", "Anderes"];
+  var CAPS = ["Platz für einen Rucksack", "Kofferraum klein", "Kofferraum gross", "Anhänger oder Transporter"];
+  var TOPICS = ["Frage", "Problem", "Hinweis oder Idee", "Zettel melden"];
+
+  // Platzhalter-Preise und Bedingungen. Vor dem Start pruefen und anpassen.
+  // Werbung = Verkaufsbotschaft, klar als Anzeige markiert. Sponsoring = Unterstuetzung mit Name und Logo, ohne Verkaufsbotschaft.
+  var PACKAGES = {
+    werbung: [
+      { key: "w-text", name: "Textanzeige", price: 49, unit: "pro Monat", lines: ["Ein kurzer Anzeigentext mit Link zwischen den Zetteln", "Klar als Anzeige markiert", "Monatlich kündbar"] },
+      { key: "w-bild", name: "Bildanzeige", price: 149, unit: "pro Monat", best: true, lines: ["Anzeigenzettel mit Bild und Link", "Weiter oben auf dem Brett", "Klar als Anzeige markiert", "Monatlich kündbar"] },
+      { key: "w-top", name: "Top-Platz", price: 390, unit: "pro Monat", lines: ["Exklusiv pro Region und Branche", "Oben am Brett und auf der Startseite", "Alles aus Bildanzeige"] }
+    ],
+    sponsoring: [
+      { key: "s-unterstuetzer", name: "Unterstützer", price: 290, unit: "pro Jahr", lines: ["Name und Link unter «Unterstützt von» auf Startseite und Brett", "Keine Verkaufsbotschaft, nur Name und Logo", "Für Betriebe, Vereine und Gemeinden"] },
+      { key: "s-pate", name: "Strecken-Pate", price: 590, unit: "pro Jahr", best: true, lines: ["Dein Name bei einer Strecke, zum Beispiel «Luzern → Weggis, präsentiert von …»", "Alles aus Unterstützer", "Strecke nach Absprache"] },
+      { key: "s-partner", name: "Regionspartner", price: 1490, unit: "pro Jahr", lines: ["Logo auf Startseite und «Über uns»", "Nennung als Partner der Region", "Gemeinsame Aktion nach Absprache", "Alles aus Strecken-Pate"] }
+    ]
+  };
+  function allPackages() { return PACKAGES.werbung.concat(PACKAGES.sponsoring); }
+  function chf(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, "’"); }
+
+  // Erfundene Beispielpersonen mit Beispielbewertungen: [Sterne, Text, Rolle]
+  var PEOPLE = {
+    lena: { name: "Lena", rev: [[5, "Pünktlich am Treffpunkt, sehr freundlich.", "Fahrt angeboten"], [5, "", "Fahrt angeboten"], [4, "Kleiner Umweg, aber gut abgesprochen.", "Fahrt angeboten"], [5, "Ruhige und sichere Fahrt.", "Fahrt angeboten"]] },
+    marco: { name: "Marco", rev: [[5, "Gut verpackt, Angaben stimmten genau.", "Transport gesucht"], [4, "", "Transport gesucht"], [5, "", "Transport gesucht"]] },
+    sven: { name: "Sven", rev: [[5, "Hat den Koffer bis vor das Hotel gebracht.", "Transport angeboten"], [5, "", "Transport angeboten"], [4, "Kam etwas später, hat aber Bescheid gegeben.", "Transport angeboten"]] },
+    jana: { name: "Jana", rev: [[5, "Pünktlich und freundlich.", "Mitfahrt gesucht"], [5, "", "Mitfahrt gesucht"]] },
+    reto: { name: "Reto", rev: [[5, "Fährt jeden Tag, sehr zuverlässig.", "Fahrt angeboten"], [4, "", "Fahrt angeboten"], [5, "", "Fahrt angeboten"], [5, "Gute Absprache vorher.", "Fahrt angeboten"], [4, "", "Fahrt angeboten"]] },
+    nina: { name: "Nina", rev: [] },
+    beat: { name: "Beat", rev: [[5, "Material kam pünktlich und heil an.", "Transport angeboten"], [5, "", "Transport angeboten"], [5, "Unkompliziert.", "Transport angeboten"]] }
+  };
+
+  var state = { view: "landing", adsCat: "werbung", step: 1, kind: null, mode: null, entries: [], ratings: [], fKind: "all", fMode: "all", lastId: null, opened: {}, reviewsOpen: {}, rateOpen: {}, sent: {} };
+  var lastKey = "";
+
+  function el(tag, props) {
+    var n = document.createElement(tag);
+    props = props || {};
+    Object.keys(props).forEach(function (k) {
+      var v = props[k];
+      if (k === "class") n.className = v;
+      else if (k === "text") n.textContent = v;
+      else if (k.indexOf("on") === 0) n.addEventListener(k.slice(2), v);
+      else if (v === true) n.setAttribute(k, "");
+      else if (v !== false && v != null) n.setAttribute(k, v);
+    });
+    for (var i = 2; i < arguments.length; i++) {
+      var list = [].concat(arguments[i]);
+      list.forEach(function (c) {
+        if (c == null || c === false) return;
+        n.append(c.nodeType ? c : document.createTextNode(c));
+      });
+    }
+    return n;
+  }
+
+  function iso(d) {
+    var m = String(d.getMonth() + 1).padStart(2, "0");
+    var day = String(d.getDate()).padStart(2, "0");
+    return d.getFullYear() + "-" + m + "-" + day;
+  }
+  function inDays(n) { var d = new Date(); d.setDate(d.getDate() + n); return iso(d); }
+  function fmtDate(s) {
+    return new Date(s + "T12:00:00").toLocaleDateString("de-CH", { weekday: "short", day: "numeric", month: "short" });
+  }
+  function fmtDay(s) {
+    return new Date(s + "T12:00:00").toLocaleDateString("de-CH", { day: "numeric", month: "short", year: "numeric" });
+  }
+
+  function seeds() {
+    var ex = "Nur ein Beispiel, kein echter Kontakt.";
+    function s(o) { o.example = true; o.name = PEOPLE[o.who].name; o.contact = ex; return o; }
+    return [
+      s({ id: "s1", who: "lena", kind: "people", mode: "offer", from: "Luzern", to: "Weggis", date: inDays(1), win: "Abends", count: 2, price: 8, note: "Fahre nach der Arbeit, Abfahrt beim Bahnhof." }),
+      s({ id: "s2", who: "marco", kind: "goods", mode: "seek", from: "Luzern", to: "Vitznau", date: inDays(1), win: "Nachmittags", item: "Koffer", kg: 18, price: 15, note: "Gästegepäck für ein Hotel." }),
+      s({ id: "s3", who: "sven", kind: "goods", mode: "offer", from: "Luzern", to: "Vitznau", date: inDays(1), win: "Nachmittags", cap: "Kofferraum gross", kg: 30, price: 10, note: "" }),
+      s({ id: "s4", who: "jana", kind: "people", mode: "seek", from: "Stans", to: "Luzern", date: inDays(2), win: "Morgens", count: 1, price: 6, note: "" }),
+      s({ id: "s5", who: "reto", kind: "people", mode: "offer", from: "Engelberg", to: "Luzern", date: inDays(2), win: "Morgens", count: 3, price: 10, note: "Pendle jeden Tag." }),
+      s({ id: "s6", who: "nina", kind: "goods", mode: "seek", from: "Luzern", to: "Engelberg", date: inDays(3), win: "Flexibel", item: "Ski oder Snowboard", kg: 7, price: 12, note: "" }),
+      s({ id: "s7", who: "beat", kind: "goods", mode: "offer", from: "Sarnen", to: "Luzern", date: inDays(4), win: "Mittags", cap: "Anhänger oder Transporter", kg: 100, price: 40, note: "Material für Märkte oder Feste." })
+    ];
+  }
+
+  function load() {
+    var mine = [], rat = [];
+    try { mine = JSON.parse(localStorage.getItem(STORE_KEY) || "[]"); } catch (e) { mine = []; }
+    try { rat = JSON.parse(localStorage.getItem(RATE_KEY) || "[]"); } catch (e) { rat = []; }
+    if (!Array.isArray(mine)) mine = [];
+    if (!Array.isArray(rat)) rat = [];
+    mine.forEach(function (m) { if (!m.who) m.who = "own-" + m.id; });
+    state.entries = mine.concat(seeds());
+    state.ratings = rat;
+  }
+  function save() {
+    try {
+      var mine = state.entries.filter(function (e) { return !e.example; });
+      localStorage.setItem(STORE_KEY, JSON.stringify(mine));
+    } catch (e) { /* ohne Speicher weiter */ }
+  }
+  function saveRatings() {
+    try { localStorage.setItem(RATE_KEY, JSON.stringify(state.ratings)); } catch (e) { /* ohne Speicher weiter */ }
+  }
+
+  function norm(s) { return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]/g, ""); }
+  function near(a, b) { a = norm(a); b = norm(b); return !!a && !!b && (a.indexOf(b) >= 0 || b.indexOf(a) >= 0); }
+  function matches(a) {
+    return state.entries.filter(function (b) {
+      if (b.id === a.id || b.mode === a.mode || b.kind !== a.kind || b.date !== a.date) return false;
+      if (!(near(a.from, b.from) || near(a.to, b.to))) return false;
+      if (a.kind === "people") {
+        var seek = a.mode === "seek" ? a : b, offer = a.mode === "offer" ? a : b;
+        if (Number(offer.count) < Number(seek.count)) return false;
+      }
+      return true;
+    });
+  }
+
+  function roleLabel(e) {
+    if (e.kind === "people") return e.mode === "offer" ? "Fahrt angeboten" : "Mitfahrt gesucht";
+    return e.mode === "offer" ? "Transport angeboten" : "Transport gesucht";
+  }
+  function chipsFor(e) {
+    if (e.kind === "people" && e.mode === "offer") return ["Pünktlich", "Fahrt angenehm", "Sicher gefahren", "Gut abgesprochen"];
+    if (e.kind === "people") return ["Pünktlich", "Freundlich", "Kostenbeitrag bezahlt", "Gut abgesprochen"];
+    if (e.mode === "offer") return ["Pünktlich", "Gepäck heil", "Freundlich", "Gut abgesprochen"];
+    return ["Pünktlich", "Angaben stimmten", "Kostenbeitrag bezahlt", "Gut abgesprochen"];
+  }
+  function starStr(n) { n = Math.max(0, Math.min(5, Math.round(n))); return "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n); }
+
+  function ratingsFor(e) {
+    var list = [];
+    var p = PEOPLE[e.who];
+    if (p) p.rev.forEach(function (r) { list.push({ s: r[0], t: r[1], role: r[2], tags: [], d: null, example: true }); });
+    state.ratings.forEach(function (r) { if (r.who === e.who) list.push({ s: r.s, t: r.t, role: r.role, tags: r.tags || [], d: r.d, example: false }); });
+    var sum = list.reduce(function (a, r) { return a + r.s; }, 0);
+    return { list: list, n: list.length, avg: list.length ? sum / list.length : 0 };
+  }
+
+  var ICON_PEOPLE = '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17" cy="15" r="6"/><circle cx="33" cy="17" r="5"/><path d="M5 40c0-8 5-13 12-13s12 5 12 13"/><path d="M30 28c6-1 13 2 13 11"/></svg>';
+  var ICON_GOODS = '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="15" width="30" height="26" rx="4"/><path d="M18 15v-4a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v4"/><path d="M17 22v13M31 22v13"/></svg>';
+  var HERO_MAP = '<svg class="map" viewBox="0 0 360 190" role="img" aria-label="Eine Strecke von Luzern über Weggis nach Vitznau mit zwei Zetteln darüber, einer bietet Plätze an, einer sucht einen Transport für einen Koffer">' +
+    '<g><rect class="slipbox" x="14" y="10" width="150" height="50" rx="4"/><circle class="pinhead" cx="89" cy="10" r="4.5"/>' +
+    '<text class="offertag" x="26" y="29">BIETE · PERSONEN</text><text x="26" y="50" font-size="17">Luzern → Weggis</text></g>' +
+    '<g><rect class="slipbox" x="196" y="10" width="150" height="50" rx="4"/><circle class="pinhead" cx="271" cy="10" r="4.5"/>' +
+    '<text class="seektag" x="208" y="29">SUCHE · GEPÄCK</text><text x="208" y="50" font-size="17">Luzern → Vitznau</text></g>' +
+    '<path class="base" d="M24 124 C100 98 160 150 180 124 S280 98 336 124"/>' +
+    '<path class="draw" d="M24 124 C100 98 160 150 180 124 S280 98 336 124"/>' +
+    '<circle class="stop" cx="24" cy="124" r="8"/><circle class="stop" cx="180" cy="124" r="8"/><circle class="stop" cx="336" cy="124" r="8"/>' +
+    '<text x="24" y="165" font-size="15" text-anchor="start">Luzern</text>' +
+    '<text x="180" y="165" font-size="15" text-anchor="middle">Weggis</text>' +
+    '<text x="336" y="165" font-size="15" text-anchor="end">Vitznau</text>' +
+    '<text class="small" x="180" y="183" font-size="11" text-anchor="middle">Beispielstrecke</text>' +
+    '</svg>';
+
+  function icon(svg) { var s = el("span"); s.innerHTML = svg; return s.firstChild; }
+  function mapNode() { var s = el("div"); s.innerHTML = HERO_MAP; return s.firstChild; }
+
+  function go(view) { state.view = view; state.sent = {}; render(); }
+  function startWizard() { state.view = "wizard"; state.step = 1; state.kind = null; state.mode = null; render(); }
+
+  function choice(svg, title, desc, onclick) {
+    return el("button", { class: "choice", type: "button", onclick: onclick }, icon(svg), el("span", { class: "t", text: title }), el("span", { class: "d", text: desc }));
+  }
+
+  function adSlip() {
+    return el("article", { class: "slip ad" },
+      el("div", { class: "head" },
+        el("span", { class: "tag adtag", text: "Anzeige" }),
+        el("span", { class: "tag plain", text: "Beispiel-Anzeige" })
+      ),
+      el("div", { class: "route", text: "Muster-Hotel am See" }),
+      el("div", { class: "detail", text: "Gäste mit Mitfahrenden parkieren bei uns einen Tag gratis. Gepäck nehmen wir am Empfang entgegen." }),
+      el("button", { class: "linkbtn sm", type: "button", text: "Hier Werbung schalten", onclick: function () { goAds("werbung"); } })
+    );
+  }
+
+  function landingView() {
+    var soon = state.entries.slice().sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; }).slice(0, 2);
+    var teaser = el("div", { class: "board" });
+    soon.forEach(function (e) { teaser.append(slip(e, { noRemove: true })); });
+    return el("div", { class: "stack" },
+      el("section", { class: "hero" },
+        el("div", { class: "eyebrow", text: BRAND + " · Mitnehmen in der Region " + REGION }),
+        el("h1", { class: "mid", text: "Wer könnte mich oder meine Sachen mitnehmen?" }),
+        el("p", { class: "lead", text: "Hänge einen Zettel auf, wenn du eine Mitnahme suchst oder Platz im Auto hast. Danach nehmt ihr direkt Kontakt auf und bewertet euch." }),
+        el("div", { class: "choices" },
+          choice(ICON_PEOPLE, "Personentransport", "Mitfahrgelegenheit für dich oder andere", function () { state.view = "wizard"; state.kind = "people"; state.mode = null; state.step = 2; render(); }),
+          choice(ICON_GOODS, "Gepäcktransport", "Koffer, Velo, Ski, Pakete und Material", function () { state.view = "wizard"; state.kind = "goods"; state.mode = null; state.step = 2; render(); })
+        ),
+        el("button", { class: "linkbtn", type: "button", text: "Zuerst das Brett ansehen", onclick: function () { go("board"); } }),
+        mapNode()
+      ),
+      el("section", { class: "section" },
+        el("h2", { text: "So funktioniert es" }),
+        el("ol", { class: "steps" },
+          el("li", {}, el("span", { class: "n", text: "1" }), el("div", {}, el("h3", { text: "Zettel aufhängen" }), el("p", { text: "Sag, was du transportieren willst oder wie viel Platz du hast. Das Formular dauert eine Minute." }))),
+          el("li", {}, el("span", { class: "n", text: "2" }), el("div", {}, el("h3", { text: "Passendes finden" }), el("p", { text: "Das Brett zeigt dir Zettel für dieselbe Strecke und denselben Tag." }))),
+          el("li", {}, el("span", { class: "n", text: "3" }), el("div", {}, el("h3", { text: "Kontakt abreissen" }), el("p", { text: "Klick auf den Abreisszettel, nimm Kontakt auf und vereinbart alles direkt. Nach der Fahrt bewertet ihr euch." })))
+        )
+      ),
+      el("section", { class: "section" },
+        el("h2", { text: "Vertrauen durch Bewertungen" }),
+        el("ul", { class: "principles" },
+          el("li", {}, el("h3", { text: "Beide Seiten bewerten" }), el("p", { text: "Fahrende und Mitfahrende, Anbietende und Auftraggebende bewerten sich nach der Fahrt gegenseitig." })),
+          el("li", {}, el("h3", { text: "Sterne und kurze Rückmeldung" }), el("p", { text: "Pünktlich, freundlich, sicher gefahren, Gepäck heil. Das sieht man auf jedem Zettel." })),
+          el("li", {}, el("h3", { text: "Neu ist erlaubt" }), el("p", { text: "Wer noch keine Bewertung hat, startet bei null und baut Vertrauen mit jeder guten Fahrt auf." }))
+        )
+      ),
+      el("section", { class: "section" },
+        el("h2", { text: "Wer es brauchen kann" }),
+        el("div", { class: "cols" },
+          el("div", { class: "col" }, el("h3", { text: "Gäste ohne Auto" }), el("p", { text: "Koffer, Velo oder Ski kommen am Ziel an, auch wenn man selbst mit dem Zug reist." })),
+          el("div", { class: "col" }, el("h3", { text: "Fahrende mit Platz" }), el("p", { text: "Wer pendelt oder ohnehin fährt, gibt freie Plätze und Kofferraum weiter und deckt einen Teil der Kosten." })),
+          el("div", { class: "col" }, el("h3", { text: "Betriebe und Vereine" }), el("p", { text: "Material für Märkte, Feste und Anlässe findet eine Mitfahrt." }))
+        )
+      ),
+      el("section", { class: "section" },
+        el("h2", { text: "Gerade am Brett" }),
+        teaser,
+        el("button", { class: "linkbtn", type: "button", text: "Das ganze Brett ansehen", onclick: function () { go("board"); } })
+      ),
+      el("section", { class: "supporters" },
+        el("div", { class: "eyebrow", text: "Unterstützt von" }),
+        el("p", { class: "detail", text: "Dieser Platz ist noch frei." }),
+        el("button", { class: "linkbtn sm", type: "button", text: "Sponsoring ansehen", onclick: function () { goAds("sponsoring"); } })
+      ),
+      el("section", { class: "cta" },
+        el("h2", { text: "Fährst du bald los oder suchst du eine Fahrt?" }),
+        el("p", { text: "Ein Zettel kostet dich eine Minute." }),
+        el("button", { class: "primary", type: "button", text: "Zettel aufhängen", onclick: startWizard })
+      )
+    );
+  }
+
+  function aboutView() {
+    var facts = el("dl", { class: "facts" },
+      el("div", {}, el("dt", { text: "Gründer" }), el("dd", { text: "Noah Balthasar" })),
+      el("div", {}, el("dt", { text: "Sitz" }), el("dd", { text: "Region " + REGION })),
+      el("div", {}, el("dt", { text: "Stand" }), el("dd", { text: "Prototyp, Oktober 2026" })),
+      el("div", {}, el("dt", { text: "Finanzierung" }), el("dd", { text: "Anzeigen und Sponsoring" }))
+    );
+    var box = el("div", { class: "stack" },
+      el("div", { class: "eyebrow", text: "Über uns" }),
+      el("h1", { class: "mid", text: "Noah Balthasar, Gründer" }),
+      el("div", { class: "prose" },
+        el("p", { text: "Ich komme aus der Region " + REGION + " und beschäftige mich mit nachhaltiger Mobilität. Ich forsche dazu, wie sich Mobilitätsangebote in der Praxis bewähren." }),
+        el("p", { text: "Die Idee zu " + BRAND + " ist einfach. In Tourismusorten reisen Gäste mit viel Gepäck, und viele Autos fahren mit freiem Platz. Ich möchte beides verbinden, ohne dass jemand extra fahren muss." }),
+        el("p", { text: "Ich baue " + BRAND + " als Ein-Personen-Projekt auf. Das Projekt ist neu, der Prototyp ist noch klein, und ich freue mich über jede Rückmeldung." })
+      ),
+      facts,
+      el("section", { class: "section" },
+        el("h2", { text: "Woran wir uns halten" }),
+        el("ul", { class: "principles" },
+          el("li", {}, el("h3", { text: "Ein Zettel, ein Kontakt" }), el("p", { text: "Es soll so einfach bleiben wie ein Aushang im Bahnhof." })),
+          el("li", {}, el("h3", { text: "Nur Fahrten, die ohnehin stattfinden" }), el("p", { text: "Niemand fährt extra. Es geht um Platz, der sonst leer bleibt." })),
+          el("li", {}, el("h3", { text: "Vertrauen durch Bewertungen" }), el("p", { text: "Beide Seiten bewerten sich nach der Fahrt. So sieht man, auf wen Verlass ist." })),
+          el("li", {}, el("h3", { text: "Offen sagen, was noch fehlt" }), el("p", { text: "Haftung und Versicherung sind noch nicht geklärt. Darum ist das hier ein Prototyp." }))
+        )
+      ),
+      el("section", { class: "section" },
+        el("h2", { text: "Wie wir Geld verdienen" }),
+        el("div", { class: "prose" },
+          el("p", { text: "Wir finanzieren uns mit Anzeigen und mit Sponsoring von Betrieben, Vereinen und Gemeinden aus der Region. Anzeigen sind immer als Anzeige markiert, Sponsoren immer mit Namen genannt. Zettel aufhängen und Fahrten finden ist kostenlos." }),
+          el("button", { class: "linkbtn", type: "button", text: "Zu Werbung und Sponsoring", onclick: function () { goAds("werbung"); } })
+        )
+      )
+    );
+    if (CONTACT) {
+      box.append(el("section", { class: "cta" },
+        el("h2", { text: "Kennst du einen Ort, der das braucht?" }),
+        el("p", { text: "Ein Hotel, einen Verein, eine Bergbahn. Sag mir, was dir fehlt oder was du anders machen würdest." }),
+        el("div", { class: "contactline", text: CONTACT })
+      ));
+    }
+    box.append(el("div", { class: "btnrow" },
+      el("button", { class: "primary", type: "button", text: "Zettel aufhängen", onclick: startWizard }),
+      el("button", { class: "secondary", type: "button", text: "Kontakt aufnehmen", onclick: function () { go("contact"); } })
+    ));
+    return box;
+  }
+
+  function wizardView() {
+    var box = el("div", { class: "stack" });
+    if (state.step === 1) {
+      box.append(
+        el("div", { class: "stepline", text: "Schritt 1 von 3" }),
+        el("h2", { text: "Worum geht es?" }),
+        el("div", { class: "choices" },
+          choice(ICON_PEOPLE, "Personentransport", "Mitfahrgelegenheit für dich oder andere", function () { state.kind = "people"; state.step = 2; render(); }),
+          choice(ICON_GOODS, "Gepäcktransport", "Koffer, Velo, Ski, Pakete und Material", function () { state.kind = "goods"; state.step = 2; render(); })
+        ),
+        el("button", { class: "linkbtn", type: "button", onclick: function () { go("board"); } }, "Lieber zuerst das Brett ansehen")
+      );
+    } else {
+      var what = state.kind === "people" ? "Personentransport" : "Gepäcktransport";
+      box.append(
+        el("div", { class: "stepline", text: "Schritt 2 von 3 · " + what }),
+        el("h2", { text: state.kind === "people" ? "Suchst du eine Mitfahrt oder hast du Platz?" : "Suchst du eine Mitnahme oder hast du Platz?" }),
+        el("div", { class: "choices" },
+          choice(state.kind === "people" ? ICON_PEOPLE : ICON_GOODS, "Ich suche", state.kind === "people" ? "Ich brauche einen Platz im Auto" : "Ich brauche jemanden, der meine Sachen mitnimmt", function () { state.mode = "seek"; state.view = "form"; render(); }),
+          choice(state.kind === "people" ? ICON_PEOPLE : ICON_GOODS, "Ich biete", state.kind === "people" ? "Ich fahre und habe Plätze frei" : "Ich fahre und habe Platz für Gepäck", function () { state.mode = "offer"; state.view = "form"; render(); })
+        ),
+        el("button", { class: "linkbtn", type: "button", onclick: function () { state.step = 1; render(); } }, "Zurück")
+      );
+    }
+    return box;
+  }
+
+  function field(id, label, control, hint) {
+    return el("div", { class: "field", id: "f-" + id },
+      el("label", { for: id, text: label }),
+      control,
+      hint ? el("span", { class: "hint", text: hint }) : null,
+      el("span", { class: "err", id: "e-" + id, role: "alert" })
+    );
+  }
+  function select(id, opts) {
+    var s = el("select", { id: id });
+    opts.forEach(function (o) {
+      if (typeof o === "string") s.append(el("option", { value: o, text: o }));
+      else s.append(el("option", { value: o[0], text: o[1] }));
+    });
+    return s;
+  }
+  function honeypot(id) {
+    return el("div", { class: "hp", "aria-hidden": "true" }, el("label", { for: id, text: "Bitte leer lassen" }), el("input", { id: id, type: "text", tabindex: "-1", autocomplete: "off" }));
+  }
+
+  function formView() {
+    var kind = state.kind, mode = state.mode;
+    var seek = mode === "seek";
+    var title = (seek ? "Ich suche" : "Ich biete") + " · " + (kind === "people" ? "Personentransport" : "Gepäcktransport");
+    var specific = [];
+    if (kind === "people") {
+      specific.push(field("count", seek ? "Wie viele Personen" : "Freie Plätze", el("input", { id: "count", type: "number", min: "1", max: "8", value: "1", inputmode: "numeric" })));
+    } else if (seek) {
+      specific.push(el("div", { class: "row2" },
+        field("item", "Was soll mit", select("item", ITEMS)),
+        field("kg", "Gewicht in kg ungefähr", el("input", { id: "kg", type: "number", min: "1", max: "500", value: "10", inputmode: "numeric" }))
+      ));
+    } else {
+      specific.push(el("div", { class: "row2" },
+        field("cap", "Wie viel Platz hast du", select("cap", CAPS)),
+        field("kg", "Maximales Gewicht in kg", el("input", { id: "kg", type: "number", min: "1", max: "500", value: "20", inputmode: "numeric" }))
+      ));
+    }
+    var form = el("form", { novalidate: true, onsubmit: onSubmit },
+      el("div", { class: "row2" },
+        field("from", "Von", el("input", { id: "from", type: "text", autocomplete: "off", placeholder: "z. B. Luzern Bahnhof" })),
+        field("to", "Nach", el("input", { id: "to", type: "text", autocomplete: "off", placeholder: "z. B. Weggis" }))
+      ),
+      el("div", { class: "row2" },
+        field("date", "Datum", el("input", { id: "date", type: "date", min: iso(new Date()), value: inDays(1) })),
+        field("win", "Zeitfenster", select("win", WINDOWS))
+      ),
+      specific,
+      field("price", seek ? "Ich zahle bis (CHF)" : "Kostenbeitrag (CHF)", el("input", { id: "price", type: "number", min: "0", max: "500", inputmode: "numeric", placeholder: "leer lassen für Absprache" })),
+      field("note", "Hinweis (freiwillig)", el("textarea", { id: "note", maxlength: "240", placeholder: seek ? "z. B. Treffpunkt, Uhrzeit, Grösse" : "z. B. Treffpunkt, Umweg möglich" })),
+      el("div", { class: "row2" },
+        field("name", "Vorname", el("input", { id: "name", type: "text", autocomplete: "given-name" })),
+        field("contact", "Kontakt", el("input", { id: "contact", type: "text", autocomplete: "off", placeholder: "Telefon oder E-Mail" }), "Wird erst nach Klick auf dem Zettel gezeigt.")
+      ),
+      el("button", { class: "primary", type: "submit", text: "Zettel aufhängen" }),
+      el("p", { class: "formnote", text: "Gib hier keine Adresse an, nur Orte oder Treffpunkte." })
+    );
+    return el("div", { class: "stack" },
+      el("div", { class: "stepline", text: "Schritt 3 von 3" }),
+      el("h2", { text: title }),
+      form,
+      el("button", { class: "linkbtn", type: "button", onclick: function () { state.view = "wizard"; state.step = 2; render(); } }, "Zurück")
+    );
+  }
+
+  function val(id) { var n = document.getElementById(id); return n ? n.value.trim() : ""; }
+  function setErr(id, msg) {
+    var f = document.getElementById("f-" + id), e = document.getElementById("e-" + id);
+    if (!f || !e) return;
+    e.textContent = msg || "";
+    f.classList.toggle("bad", !!msg);
+    var inp = document.getElementById(id);
+    if (inp) inp.setAttribute("aria-invalid", msg ? "true" : "false");
+  }
+  function looksLikeContact(v) { return /\S+@\S+\.\S+/.test(v) || v.replace(/\D/g, "").length >= 7; }
+
+  function onSubmit(ev) {
+    ev.preventDefault();
+    var bad = [];
+    function need(id, msg) { if (!val(id)) { setErr(id, msg); bad.push(id); } else setErr(id, ""); }
+    need("from", "Bitte einen Startort eintragen.");
+    need("to", "Bitte ein Ziel eintragen.");
+    need("date", "Bitte ein Datum wählen.");
+    need("name", "Bitte einen Vornamen eintragen.");
+    need("contact", "Bitte Telefon oder E-Mail eintragen.");
+    if (val("date") && val("date") < iso(new Date())) { setErr("date", "Das Datum liegt in der Vergangenheit."); bad.push("date"); }
+    if (bad.length) { var first = document.getElementById(bad[0]); if (first) first.focus(); return; }
+
+    var id = "u" + Date.now();
+    var e = { id: id, who: "own-" + id, example: false, kind: state.kind, mode: state.mode, from: val("from"), to: val("to"), date: val("date"), win: val("win"), price: val("price") === "" ? null : Number(val("price")), note: val("note"), name: val("name"), contact: val("contact") };
+    if (state.kind === "people") e.count = Math.max(1, Number(val("count")) || 1);
+    else if (state.mode === "seek") { e.item = val("item"); e.kg = Number(val("kg")) || 0; }
+    else { e.cap = val("cap"); e.kg = Number(val("kg")) || 0; }
+    state.entries.unshift(e);
+    save();
+    state.lastId = e.id;
+    state.view = "done";
+    render();
+  }
+
+  function detailText(e) {
+    if (e.kind === "people") return e.mode === "seek" ? "Sucht Platz für " + e.count + (Number(e.count) === 1 ? " Person" : " Personen") : e.count + (Number(e.count) === 1 ? " freier Platz" : " freie Plätze");
+    return e.mode === "seek" ? e.item + ", ca. " + e.kg + " kg" : e.cap + ", bis " + e.kg + " kg";
+  }
+  function priceText(e) {
+    if (e.price === null || e.price === undefined || e.price === "") return "Beitrag nach Absprache";
+    return (e.mode === "seek" ? "Zahlt bis CHF " : "Beitrag CHF ") + e.price;
+  }
+
+  function copyText(text, node, btn) {
+    function fallback() {
+      try {
+        if (node.select) { node.focus(); node.select(); }
+        else { var r = document.createRange(); r.selectNodeContents(node); var s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+      } catch (x) { /* nichts */ }
+      btn.textContent = "Zum Kopieren markiert";
+    }
+    try {
+      if (!navigator.clipboard) { fallback(); return; }
+      navigator.clipboard.writeText(text).then(function () { btn.textContent = "Kopiert"; }, fallback);
+    } catch (x) { fallback(); }
+  }
+
+  function reviewsList(e, rt) {
+    var ul = el("ul", { class: "reviews" });
+    if (rt.list.some(function (r) { return r.example; })) ul.append(el("li", {}, el("span", { class: "rnote", text: "Beispielbewertungen, erfunden." })));
+    rt.list.slice().reverse().forEach(function (r) {
+      var meta = [r.role];
+      if (r.d) meta.push(fmtDay(r.d));
+      if (r.tags && r.tags.length) meta.push(r.tags.join(", "));
+      ul.append(el("li", {},
+        el("span", { class: "rstars", role: "img", "aria-label": r.s + " von 5 Sternen", text: starStr(r.s) }),
+        r.t ? el("span", { class: "rtxt", text: r.t }) : null,
+        el("span", { class: "rmeta", text: meta.join(" · ") })
+      ));
+    });
+    return ul;
+  }
+
+  function ratePanel(e) {
+    var stars = 0, picked = {};
+    var starBtns = [];
+    var err = el("div", { class: "err", role: "alert" });
+    var starRow = el("div", { class: "starpick", role: "group", "aria-label": "Sterne vergeben" });
+    function paint() {
+      starBtns.forEach(function (b, idx) {
+        b.setAttribute("aria-pressed", String(idx < stars));
+        b.classList.toggle("on", idx < stars);
+      });
+    }
+    for (var i = 1; i <= 5; i++) (function (n) {
+      var b = el("button", { type: "button", "aria-pressed": "false", "aria-label": n + (n === 1 ? " Stern" : " Sterne"), text: "★", onclick: function () { stars = n; err.textContent = ""; paint(); } });
+      starBtns.push(b);
+      starRow.append(b);
+    })(i);
+    var chips = el("div", { class: "chips", role: "group", "aria-label": "Was war gut" });
+    chipsFor(e).forEach(function (label) {
+      var c = el("button", { type: "button", class: "chip", "aria-pressed": "false", text: label });
+      c.addEventListener("click", function () { picked[label] = !picked[label]; c.setAttribute("aria-pressed", String(!!picked[label])); });
+      chips.append(c);
+    });
+    var cid = "rc-" + e.id;
+    var comment = el("textarea", { id: cid, maxlength: "200", placeholder: "Ein kurzer Satz hilft anderen (freiwillig)" });
+    return el("div", { class: "ratepanel" },
+      el("h3", { text: "Wie war es mit " + e.name + "?" }),
+      el("p", { class: "detail", text: "Bewerte nur, wenn die Fahrt oder der Transport stattgefunden hat." }),
+      starRow,
+      chips,
+      el("div", { class: "field" }, el("label", { for: cid, text: "Kommentar" }), comment),
+      err,
+      el("div", { class: "btnrow" },
+        el("button", { type: "button", class: "primary", text: "Bewertung abgeben", onclick: function () {
+          if (!stars) { err.textContent = "Bitte vergib mindestens einen Stern."; return; }
+          var chosen = Object.keys(picked).filter(function (k) { return picked[k]; });
+          state.ratings.push({ who: e.who, slip: e.id, s: stars, t: comment.value.trim(), tags: chosen, role: roleLabel(e), d: iso(new Date()) });
+          saveRatings();
+          state.rateOpen[e.id] = false;
+          state.reviewsOpen[e.id] = true;
+          render();
+        } }),
+        el("button", { type: "button", class: "secondary", text: "Abbrechen", onclick: function () { state.rateOpen[e.id] = false; render(); } })
+      )
+    );
+  }
+
+  function slip(e, opts) {
+    opts = opts || {};
+    var m = matches(e);
+    var open = !!state.opened[e.id];
+    var own = !e.example;
+    var rt = ratingsFor(e);
+    var mineRating = state.ratings.filter(function (r) { return r.slip === e.id; })[0];
+    var contactNode = el("span", { class: "contact", text: e.contact });
+    var tear = el("div", { class: "tear" });
+    var acts = el("div", { class: "acts" });
+    if (!open) {
+      tear.append(el("span", { class: "who", text: "Abreisszettel" }), el("button", { type: "button", text: "Kontakt anzeigen", onclick: function () { state.opened[e.id] = true; render(); } }));
+    } else {
+      var copyBtn = el("button", { type: "button", class: "ghost", text: "Kopieren" });
+      copyBtn.addEventListener("click", function () { copyText(e.contact, contactNode, copyBtn); });
+      acts.append(copyBtn);
+      if (!own) {
+        if (mineRating) acts.append(el("span", { class: "who", text: "Du hast mit " + mineRating.s + " von 5 bewertet" }));
+        else acts.append(el("button", { type: "button", text: "Bewerten", "aria-expanded": String(!!state.rateOpen[e.id]), onclick: function () { state.rateOpen[e.id] = !state.rateOpen[e.id]; render(); } }));
+      }
+      tear.append(el("div", {}, el("div", { class: "who", text: e.name }), contactNode), acts);
+    }
+    if (own && !opts.noRemove) {
+      acts.append(el("button", { type: "button", class: "ghost", text: "Entfernen", onclick: function () {
+        state.entries = state.entries.filter(function (x) { return x.id !== e.id; });
+        save(); render();
+      } }));
+      if (!open) { tear.append(acts); }
+    }
+    var avgStr = rt.avg.toFixed(1);
+    var summary = rt.n
+      ? el("span", { class: "rate-sum" }, el("span", { class: "glyph", "aria-hidden": "true", text: "★ " }), el("span", { role: "img", "aria-label": avgStr + " von 5 Sternen, " + rt.n + (rt.n === 1 ? " Bewertung" : " Bewertungen"), text: avgStr + " (" + rt.n + ")" }))
+      : el("span", { class: "rate-sum new", text: "Neu, noch keine Bewertungen" });
+    var revOpen = !!state.reviewsOpen[e.id];
+    var person = el("div", { class: "person" },
+      el("span", { class: "pname", text: own ? "Du (" + e.name + ")" : e.name }),
+      summary,
+      rt.n ? el("button", { type: "button", class: "linkbtn sm", "aria-expanded": String(revOpen), text: revOpen ? "Bewertungen ausblenden" : "Bewertungen lesen", onclick: function () { state.reviewsOpen[e.id] = !revOpen; render(); } }) : null
+    );
+    return el("article", { class: "slip" },
+      el("div", { class: "head" },
+        el("span", { class: "tag " + e.mode, text: e.mode === "seek" ? "Suche" : "Biete" }),
+        el("span", { class: "tag plain", text: e.kind === "people" ? "Personentransport" : "Gepäcktransport" }),
+        e.example ? el("span", { class: "tag plain", text: "Beispiel" }) : el("span", { class: "tag plain", text: "Von dir" })
+      ),
+      person,
+      revOpen && rt.n ? reviewsList(e, rt) : null,
+      el("div", { class: "route" }, e.from, el("span", { class: "arrow", text: "→" }), e.to),
+      el("div", { class: "when", text: fmtDate(e.date) + " · " + e.win }),
+      el("div", { class: "detail", text: detailText(e) }),
+      el("div", { class: "price", text: priceText(e) }),
+      e.note ? el("div", { class: "note", text: e.note }) : null,
+      m.length ? el("div", { class: "match", text: m.length === 1 ? "1 passender Zettel auf dem Brett" : m.length + " passende Zettel auf dem Brett" }) : null,
+      tear,
+      state.rateOpen[e.id] && !own && open && !mineRating ? ratePanel(e) : null
+    );
+  }
+
+  function segment(label, options, current, onpick) {
+    var wrap = el("div", { class: "seg", role: "group", "aria-label": label });
+    options.forEach(function (o) {
+      wrap.append(el("button", { type: "button", "aria-pressed": String(current === o[0]), text: o[1], onclick: function () { onpick(o[0]); } }));
+    });
+    return wrap;
+  }
+
+  function boardView() {
+    var list = state.entries.filter(function (e) {
+      return (state.fKind === "all" || e.kind === state.fKind) && (state.fMode === "all" || e.mode === state.fMode);
+    }).sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+    var board = el("div", { class: "board" });
+    if (!list.length) board.append(el("div", { class: "empty", text: "Auf dem Brett hängt dazu noch nichts. Hänge den ersten Zettel auf." }));
+    list.forEach(function (e, i) {
+      board.append(slip(e));
+      if (i === 2) board.append(adSlip());
+    });
+    if (list.length && list.length < 3) board.append(adSlip());
+    return el("div", { class: "stack" },
+      el("h2", { text: "Brett " + REGION }),
+      el("div", { class: "filters" },
+        segment("Art", [["all", "Alles"], ["people", "Personentransport"], ["goods", "Gepäcktransport"]], state.fKind, function (v) { state.fKind = v; render(); }),
+        segment("Rolle", [["all", "Alle"], ["seek", "Suche"], ["offer", "Biete"]], state.fMode, function (v) { state.fMode = v; render(); })
+      ),
+      board,
+      el("button", { class: "primary", type: "button", text: "Eigenen Zettel aufhängen", onclick: startWizard })
+    );
+  }
+
+  function doneView() {
+    var e = state.entries.filter(function (x) { return x.id === state.lastId; })[0];
+    if (!e) { state.view = "board"; return boardView(); }
+    var m = matches(e);
+    var box = el("div", { class: "stack" },
+      el("div", { class: "done" },
+        el("h2", { text: "Dein Zettel hängt" }),
+        el("p", { text: m.length ? "Es gibt bereits passende Zettel. Schau sie dir an und nimm Kontakt auf." : "Noch ist nichts Passendes aufgetaucht. Dein Zettel bleibt am Brett." })
+      )
+    );
+    if (m.length) {
+      var l = el("div", { class: "board" });
+      m.forEach(function (x) { l.append(slip(x)); });
+      box.append(l);
+    }
+    box.append(
+      el("button", { class: "primary", type: "button", text: "Zum ganzen Brett", onclick: function () { go("board"); } }),
+      el("button", { class: "linkbtn", type: "button", text: "Noch einen Zettel aufhängen", onclick: startWizard })
+    );
+    return box;
+  }
+
+  // Gemeinsamer Versand fuer Kontakt- und Werbeanfragen.
+  function sendForm(kind, pairs) {
+    var text = pairs.map(function (p) { return p[0] + ": " + p[1]; }).join("\n");
+    if (!FORM_ENDPOINT) { state.sent[kind] = { mode: "manual", text: text }; render(); return; }
+    var data = {};
+    pairs.forEach(function (p) { data[p[0]] = p[1]; });
+    state.sent[kind] = { mode: "sending" };
+    render();
+    fetch(FORM_ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json", "Accept": "application/json" }, body: JSON.stringify(data) })
+      .then(function (r) { if (!r.ok) throw new Error("http"); state.sent[kind] = { mode: "sent" }; render(); })
+      .catch(function () { state.sent[kind] = { mode: "failed", text: text }; render(); });
+  }
+
+  function resultView(kind, backLabel) {
+    var r = state.sent[kind];
+    var box = el("div", { class: "stack" });
+    if (r.mode === "sending") {
+      box.append(el("div", { class: "done" }, el("h2", { text: "Wird gesendet" }), el("p", { text: "Einen Moment bitte." })));
+      return box;
+    }
+    if (r.mode === "sent") {
+      box.append(el("div", { class: "done" }, el("h2", { text: "Danke" }), el("p", { text: "Deine Nachricht ist angekommen. Wir melden uns, sobald wir können." })));
+    } else {
+      var failed = r.mode === "failed";
+      box.append(el("div", { class: "done warn" },
+        el("h2", { text: failed ? "Senden hat nicht geklappt" : "Noch nicht verbunden" }),
+        el("p", { text: failed ? "Kopiere die Nachricht und schick sie direkt an uns." : "Dieser Prototyp ist noch nicht mit einem Postfach verbunden. Kopiere die Nachricht und schick sie direkt an uns." }),
+        CONTACT ? el("p", { class: "contactline", text: CONTACT }) : el("p", { text: "Die Kontaktadresse wird vor dem Start eingetragen." })
+      ));
+      var ta = el("textarea", { class: "copybox", id: "res-text-" + kind, readonly: true, "aria-label": "Nachricht zum Kopieren", text: r.text });
+      var cb = el("button", { type: "button", class: "secondary", text: "Nachricht kopieren" });
+      cb.addEventListener("click", function () { copyText(r.text, ta, cb); });
+      box.append(ta, el("div", { class: "btnrow" }, cb));
+    }
+    box.append(el("button", { class: "linkbtn", type: "button", text: backLabel, onclick: function () { state.sent[kind] = null; delete state.sent[kind]; render(); } }));
+    return box;
+  }
+
+  function contactView() {
+    if (state.sent.contact) return resultView("contact", "Neue Nachricht schreiben");
+    var form = el("form", { novalidate: true, onsubmit: function (ev) {
+      ev.preventDefault();
+      var bad = [];
+      function chk(id, ok, msg) { if (!ok) { setErr(id, msg); bad.push(id); } else setErr(id, ""); }
+      chk("c-msg", val("c-msg").length >= 10, "Bitte schreib mindestens einen kurzen Satz.");
+      chk("c-contact", looksLikeContact(val("c-contact")), "Bitte eine E-Mail-Adresse oder Telefonnummer eintragen.");
+      if (bad.length) { var f = document.getElementById(bad[0]); if (f) f.focus(); return; }
+      if (val("c-hp")) { state.sent.contact = { mode: "sent" }; render(); return; }
+      sendForm("contact", [["Thema", val("c-topic")], ["Betrifft Zettel", val("c-ref") || "-"], ["Nachricht", val("c-msg")], ["Vorname", val("c-name") || "-"], ["Kontakt", val("c-contact")]]);
+    } },
+      el("div", { class: "row2" },
+        field("c-topic", "Worum geht es", select("c-topic", TOPICS)),
+        field("c-ref", "Betrifft Zettel (freiwillig)", el("input", { id: "c-ref", type: "text", autocomplete: "off", placeholder: "z. B. Luzern → Weggis, 12. Okt." }))
+      ),
+      field("c-msg", "Deine Nachricht", el("textarea", { id: "c-msg", maxlength: "1200", placeholder: "Was möchtest du uns sagen oder fragen" })),
+      el("div", { class: "row2" },
+        field("c-name", "Vorname (freiwillig)", el("input", { id: "c-name", type: "text", autocomplete: "given-name" })),
+        field("c-contact", "E-Mail oder Telefon", el("input", { id: "c-contact", type: "text", autocomplete: "off" }), "Damit wir antworten können.")
+      ),
+      honeypot("c-hp"),
+      el("button", { class: "primary", type: "submit", text: "Nachricht senden" }),
+      el("p", { class: "formnote", text: "Schreib keine Passwörter oder Zahlungsdaten in die Nachricht." })
+    );
+    return el("div", { class: "stack" },
+      el("div", { class: "eyebrow", text: "Kontakt" }),
+      el("h1", { class: "mid", text: "Frage, Problem oder Hinweis" }),
+      el("p", { class: "lead", text: "Etwas funktioniert nicht, ein Zettel ist fragwürdig oder du hast eine Idee? Schreib uns." }),
+      form
+    );
+  }
+
+  function goAds(cat) { state.adsCat = cat; go("ads"); }
+
+  function adsView() {
+    if (state.sent.ads) return resultView("ads", "Neue Anfrage schreiben");
+    var cat = state.adsCat === "sponsoring" ? "sponsoring" : "werbung";
+    var list = PACKAGES[cat];
+    var cards = el("div", { class: "pkgs" });
+    list.forEach(function (p) {
+      cards.append(el("article", { class: "pkg" + (p.best ? " best" : "") },
+        el("h3", { text: p.name }),
+        el("div", { class: "pr" }, "CHF " + chf(p.price), el("small", { class: "unit", text: " " + p.unit })),
+        el("ul", {}, p.lines.map(function (l) { return el("li", { text: l }); })),
+        el("button", { type: "button", class: p.best ? "primary" : "secondary", text: "Dieses Paket anfragen", onclick: function () {
+          var s = document.getElementById("a-pkg");
+          if (s) s.value = p.key;
+          var form = document.getElementById("adform");
+          if (form) form.scrollIntoView();
+          var c = document.getElementById("a-company");
+          if (c) c.focus();
+        } })
+      ));
+    });
+    var form = el("form", { id: "adform", novalidate: true, onsubmit: function (ev) {
+      ev.preventDefault();
+      var bad = [];
+      function chk(id, ok, msg) { if (!ok) { setErr(id, msg); bad.push(id); } else setErr(id, ""); }
+      chk("a-company", !!val("a-company"), "Bitte den Namen des Betriebs eintragen.");
+      chk("a-person", !!val("a-person"), "Bitte eine Ansprechperson eintragen.");
+      chk("a-contact", looksLikeContact(val("a-contact")), "Bitte eine E-Mail-Adresse oder Telefonnummer eintragen.");
+      if (bad.length) { var f = document.getElementById(bad[0]); if (f) f.focus(); return; }
+      if (val("a-hp")) { state.sent.ads = { mode: "sent" }; render(); return; }
+      var pk = allPackages().filter(function (p) { return p.key === val("a-pkg"); })[0];
+      sendForm("ads", [["Anfrage", cat === "sponsoring" ? "Sponsoring" : "Werbung"], ["Betrieb", val("a-company")], ["Ansprechperson", val("a-person")], ["Kontakt", val("a-contact")], ["Paket", pk ? pk.name + " (CHF " + chf(pk.price) + " " + pk.unit + ")" : "offen"], ["Ort oder Region", val("a-place") || "-"], ["Nachricht", val("a-msg") || "-"]]);
+    } },
+      field("a-company", "Betrieb", el("input", { id: "a-company", type: "text", autocomplete: "organization" })),
+      el("div", { class: "row2" },
+        field("a-person", "Ansprechperson", el("input", { id: "a-person", type: "text", autocomplete: "name" })),
+        field("a-contact", "E-Mail oder Telefon", el("input", { id: "a-contact", type: "text", autocomplete: "off" }))
+      ),
+      el("div", { class: "row2" },
+        field("a-pkg", "Paket", select("a-pkg", list.map(function (p) { return [p.key, p.name + " (CHF " + chf(p.price) + " " + p.unit + ")"]; }).concat([["offen", "Noch offen, bitte beraten"]]))),
+        field("a-place", "Ort oder Region (freiwillig)", el("input", { id: "a-place", type: "text", autocomplete: "off", placeholder: "z. B. Weggis" }))
+      ),
+      field("a-msg", "Nachricht (freiwillig)", el("textarea", { id: "a-msg", maxlength: "1200", placeholder: cat === "sponsoring" ? "Was möchtest du unterstützen" : "Was möchtest du bewerben und wann" })),
+      honeypot("a-hp"),
+      el("button", { class: "primary", type: "submit", text: "Anfrage senden" })
+    );
+
+    var intro = cat === "werbung"
+      ? "Werbung ist eine Botschaft mit Angebot. Hotels, Bergbahnen, Gepäckdienste und andere Betriebe zeigen sich auf dem Brett, dort wo Reisen geplant werden."
+      : "Sponsoring heisst, die Plattform zu unterstützen, ohne etwas zu verkaufen. Dein Name steht dort, wo Menschen Vertrauen aufbauen. Das passt für Gemeinden, Vereine und Betriebe, die die Region stärken wollen.";
+    var demo;
+    if (cat === "werbung") {
+      demo = el("section", { class: "section" }, el("h2", { text: "So sieht eine Anzeige aus" }), adSlip());
+    } else {
+      demo = el("section", { class: "section" },
+        el("h2", { text: "So sieht Sponsoring aus" }),
+        el("div", { class: "sponsor-demo" },
+          el("div", { class: "eyebrow", text: "Unterstützt von" }),
+          el("div", { class: "line", text: "Muster-Hotel am See · Beispiel Verein Weggis" }),
+          el("div", { class: "by", text: "Strecken-Pate" }),
+          el("div", { class: "line", text: "Luzern → Weggis, präsentiert von Muster-Hotel am See" }),
+          el("p", { class: "detail", text: "Beispiele mit erfundenen Namen. Sponsoring trägt den Hinweis «Gesponsert» oder «Unterstützt von» und enthält keine Verkaufsbotschaft." })
+        )
+      );
+    }
+    var rules = cat === "werbung"
+      ? [["Klar markiert", "Jede Anzeige trägt den Hinweis «Anzeige». Sie sieht aus wie ein Zettel, wird aber nie als normaler Zettel dargestellt."], ["Keine Kontaktdaten für Werbende", "Die Kontakte auf den Zetteln bleiben bei den Nutzenden. Werbende bekommen sie nicht."]]
+      : [["Unabhängig bleiben", "Sponsoring hat keinen Einfluss auf Bewertungen und darauf, welche Zettel angezeigt werden."], ["Offen gezeigt", "Sponsoren stehen mit Namen auf der Plattform. Der Hinweis «Unterstützt von» ist immer sichtbar."]];
+
+    return el("div", { class: "stack" },
+      el("div", { class: "eyebrow", text: "Mit " + BRAND + " sichtbar werden" }),
+      el("h1", { class: "mid", text: "Werbung und Sponsoring" }),
+      segment("Kategorie", [["werbung", "Werbung"], ["sponsoring", "Sponsoring"]], cat, function (v) { state.adsCat = v; render(); }),
+      el("p", { class: "lead", text: intro }),
+      el("section", { class: "section" },
+        el("h2", { text: cat === "werbung" ? "Werbepakete" : "Sponsoring-Pakete" }),
+        cards,
+        el("p", { class: "formnote", text: "Preise und Bedingungen sind Vorschläge für den Start. Wir sind am Anfang und haben noch keine Reichweitenzahlen. Frag nach dem aktuellen Stand." })
+      ),
+      demo,
+      el("ul", { class: "principles" }, rules.map(function (r) { return el("li", {}, el("h3", { text: r[0] }), el("p", { text: r[1] })); })),
+      el("section", { class: "section" },
+        el("h2", { text: "Anfrage senden" }),
+        form
+      )
+    );
+  }
+
+  function orText(v, fallback) { return v ? v : fallback; }
+  function legalBanner() {
+    if (!LEGAL_DRAFT) return null;
+    return el("div", { class: "done warn" }, el("h2", { text: "Entwurf" }), el("p", { text: "Dieser Text ist ein Entwurf und noch nicht rechtlich geprüft. Er ersetzt keine Rechtsberatung." }));
+  }
+  function lsec(title, nodes) {
+    return el("section", {}, el("h2", { text: title }), nodes);
+  }
+  function para(t) { return el("p", { text: t }); }
+  function bullets(items) { return el("ul", {}, items.map(function (t) { return el("li", { text: t }); })); }
+
+  function impressumView() {
+    var later = "wird vor dem Start ergänzt";
+    return el("div", { class: "stack" },
+      el("div", { class: "eyebrow", text: "Rechtliches" }),
+      el("h1", { class: "mid", text: "Impressum" }),
+      legalBanner(),
+      el("div", { class: "legal" },
+        lsec("Betreiber", el("dl", { class: "facts" },
+          el("div", {}, el("dt", { text: "Name" }), el("dd", { text: "Noah Balthasar" })),
+          el("div", {}, el("dt", { text: "Funktion" }), el("dd", { text: "Gründer von " + BRAND })),
+          el("div", {}, el("dt", { text: "Adresse" }), el("dd", { text: orText(ADDRESS, later) })),
+          el("div", {}, el("dt", { text: "Kontakt" }), el("dd", { text: orText(CONTACT, later) })),
+          el("div", {}, el("dt", { text: "Rechtsform" }), el("dd", { text: orText(LEGAL_FORM, later) })),
+          el("div", {}, el("dt", { text: "Land" }), el("dd", { text: "Schweiz" }))
+        )),
+        lsec("Inhalt dieser Seite", [para("Die Inhalte wurden mit Sorgfalt erstellt. Für Richtigkeit, Vollständigkeit und Aktualität gibt es keine Gewähr.")]),
+        lsec("Zettel, Bewertungen und Nachrichten von Nutzenden", [
+          para("Zettel, Bewertungen und Nachrichten stammen von den Nutzenden. Wir prüfen sie nicht vorab und vermitteln nur den Kontakt."),
+          para("Vereinbarungen über Fahrten und Transporte treffen die Nutzenden untereinander. Für Schäden aus solchen Vereinbarungen übernehmen wir, soweit gesetzlich zulässig, keine Haftung. Haftung und Versicherung sind noch nicht abschliessend geklärt."),
+          para("Hinweise auf unpassende Zettel nehmen wir über das Kontaktformular entgegen.")
+        ]),
+        lsec("Anzeigen und Sponsoring", [para("Anzeigen und gesponserte Inhalte sind als solche gekennzeichnet.")]),
+        lsec("Links auf andere Seiten", [para("Verlinkte Seiten Dritter liegen ausserhalb unseres Einflusses. Für deren Inhalte sind allein die jeweiligen Betreiber verantwortlich.")]),
+        lsec("Urheberrecht", [para("Texte und Gestaltung dieser Seite sind urheberrechtlich geschützt. Eine Nutzung ausserhalb der gesetzlichen Schranken braucht unsere Zustimmung.")])
+      )
+    );
+  }
+
+  function datenschutzView() {
+    var later = "wird vor dem Start ergänzt";
+    return el("div", { class: "stack" },
+      el("div", { class: "eyebrow", text: "Rechtliches" }),
+      el("h1", { class: "long", text: "Datenschutzerklärung" }),
+      legalBanner(),
+      el("div", { class: "legal" },
+        para("Stand Oktober 2026. Diese Erklärung beschreibt, wie " + BRAND + " Personendaten nach dem Schweizer Datenschutzgesetz bearbeitet."),
+        lsec("Wer verantwortlich ist", [
+          para("Noah Balthasar, Gründer von " + BRAND + ", Schweiz."),
+          para("Adresse: " + orText(ADDRESS, later) + ". Kontakt: " + orText(CONTACT, later) + ".")
+        ]),
+        lsec("Welche Daten wir bearbeiten", [
+          para("Zettel und Bewertungen. Was du auf einem Zettel oder in einer Bewertung einträgst, etwa Orte, Datum, Vorname und Kontakt, wird heute nur im lokalen Speicher deines Browsers abgelegt. Es wird nicht an uns übermittelt. Du kannst es löschen, indem du Zettel entfernst oder die Website-Daten in deinem Browser löschst."),
+          para("Nachrichten über die Formulare. Wenn du das Kontaktformular oder das Anfrageformular für Werbung und Sponsoring nutzt, bearbeiten wir deine Angaben, also Thema, Nachricht, Name und Kontakt. Wir brauchen sie, um dir zu antworten."),
+          para(FORM_ENDPOINT ? "Die Nachricht wird über einen Formular-Dienst an uns zugestellt. Dieser Dienst kann Daten auch im Ausland bearbeiten." : "Zurzeit wird über die Formulare nichts versendet. Die Nachricht bleibt in deinem Browser, bis du sie selbst weiterschickst."),
+          para("Technische Daten. Beim Aufruf der Seite fallen beim Hosting-Anbieter technische Daten an, zum Beispiel IP-Adresse, Zeitpunkt und Browser.")
+        ]),
+        lsec("Hosting", [para("Die Seite wird bei folgendem Anbieter betrieben: " + HOSTING + ". Dabei kann deine IP-Adresse in die USA übermittelt werden.")]),
+        lsec("Schriftarten", [para("Die Seite lädt Schriftarten von Google Fonts (fonts.googleapis.com und fonts.gstatic.com). Dabei erhält Google deine IP-Adresse, und sie kann in die USA übermittelt werden.")]),
+        lsec("Cookies und Tracking", [para("Wir setzen keine Cookies und keine Analyse- oder Werbe-Tracker ein. Die Seite nutzt den lokalen Speicher deines Browsers, damit deine Zettel und Bewertungen erhalten bleiben.")]),
+        lsec("Weitergabe", [para("Kontaktdaten von Zetteln geben wir nicht an Werbende oder Sponsoren weiter. Wenn wir ein gemeinsames Brett einführen, bei dem Zettel für andere sichtbar sind, passen wir diese Erklärung vorher an.")]),
+        lsec("Aufbewahrung", [para("Nachrichten über die Formulare bewahren wir so lange auf, wie es für die Bearbeitung nötig ist oder das Gesetz es verlangt.")]),
+        lsec("Deine Rechte", [
+          para("Du kannst Auskunft über deine Daten verlangen. Du kannst sie berichtigen oder löschen lassen und der Bearbeitung widersprechen. Schreib dazu über das Kontaktformular."),
+          para("Du kannst dich auch an den Eidgenössischen Datenschutz- und Öffentlichkeitsbeauftragten (EDÖB) wenden.")
+        ]),
+        lsec("Änderungen", [para("Wir passen diese Erklärung an, wenn sich die Seite ändert. Es gilt die jeweils veröffentlichte Fassung.")])
+      )
+    );
+  }
+
+  function render() {
+    var views = { landing: landingView, about: aboutView, wizard: wizardView, form: formView, done: doneView, board: boardView, ads: adsView, contact: contactView, impressum: impressumView, datenschutz: datenschutzView };
+    var v = document.getElementById("view");
+    v.replaceChildren((views[state.view] || landingView)());
+    document.getElementById("boardCount").textContent = String(state.entries.length);
+    [["boardBtn", "board"], ["adsBtn", "ads"], ["aboutBtn", "about"], ["contactBtn", "contact"]].forEach(function (p) {
+      var b = document.getElementById(p[0]);
+      if (state.view === p[1]) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
+    });
+    var key = state.view + ":" + state.step + ":" + (state.sent.contact || state.sent.ads ? "r" : "");
+    if (key !== lastKey) { lastKey = key; window.scrollTo(0, 0); }
+  }
+
+  document.getElementById("brandName").textContent = BRAND;
+  document.getElementById("regionTag").textContent = REGION;
+  document.getElementById("brandBtn").addEventListener("click", function () { go("landing"); });
+  document.getElementById("boardBtn").addEventListener("click", function () { go("board"); });
+  document.getElementById("adsBtn").addEventListener("click", function () { goAds(state.adsCat); });
+  document.getElementById("aboutBtn").addEventListener("click", function () { go("about"); });
+  document.getElementById("contactBtn").addEventListener("click", function () { go("contact"); });
+  document.getElementById("impBtn").addEventListener("click", function () { go("impressum"); });
+  document.getElementById("dsBtn").addEventListener("click", function () { go("datenschutz"); });
+  load();
+  render();
+})();
+</script>
